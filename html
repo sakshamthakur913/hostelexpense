@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hostel Expense Tracker</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            text-align: center;
+        }
+
+        .container {
+            width: 400px;
+            margin: 40px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 90%;
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .expense-item {
+            text-align: left;
+            margin: 5px 0;
+            padding: 5px;
+            background: #eee;
+            border-radius: 5px;
+        }
+
+        .total {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🏠 Hostel Expense Tracker</h2>
+
+    <input type="text" id="name" placeholder="Expense Name">
+    <input type="number" id="amount" placeholder="Amount">
+    <br>
+    <button onclick="addExpense()">Add Expense</button>
+    <button onclick="splitExpense()">Split Expense</button>
+
+    <div id="expenseList"></div>
+
+    <div class="total">
+        Total: ₹<span id="totalAmount">0</span>
+    </div>
+</div>
+
+<script>
+    let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+    function saveData() {
+        localStorage.setItem("expenses", JSON.stringify(expenses));
+    }
+
+    function addExpense() {
+        let name = document.getElementById("name").value;
+        let amount = parseFloat(document.getElementById("amount").value);
+
+        if (name === "" || isNaN(amount)) {
+            alert("Please enter valid details");
+            return;
+        }
+
+        expenses.push({ name, amount });
+        saveData();
+        displayExpenses();
+
+        document.getElementById("name").value = "";
+        document.getElementById("amount").value = "";
+    }
+
+    function displayExpenses() {
+        let list = document.getElementById("expenseList");
+        let total = 0;
+        list.innerHTML = "";
+
+        expenses.forEach((expense, index) => {
+            total += expense.amount;
+            list.innerHTML += `
+                <div class="expense-item">
+                    ${expense.name} - ₹${expense.amount}
+                    <button onclick="deleteExpense(${index})" style="background:red;">X</button>
+                </div>
+            `;
+        });
+
+        document.getElementById("totalAmount").innerText = total;
+    }
+
+    function deleteExpense(index) {
+        expenses.splice(index, 1);
+        saveData();
+        displayExpenses();
+    }
+
+    function splitExpense() {
+        let people = prompt("Enter number of people:");
+        if (people && !isNaN(people)) {
+            let total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            alert("Each person should pay: ₹" + (total / people).toFixed(2));
+        }
+    }
+
+    displayExpenses();
+</script>
+
+</body>
+</html>
