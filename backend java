@@ -1,0 +1,95 @@
+import java.util.Scanner;
+
+class Expense {
+    String name;
+    double amount;
+
+    Expense(String name, double amount) {
+        this.name = name;
+        this.amount = amount;
+    }
+}
+
+public class HostelExpenseTracker {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        Expense[] expenses = new Expense[100];
+        int count = 0;
+        int choice;
+
+        do {
+            System.out.println("\n--- Hostel Expense Tracker ---");
+            System.out.println("1. Add Expense");
+            System.out.println("2. View Expenses");
+            System.out.println("3. Show Total Expense");
+            System.out.println("4. Split Expense");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter expense name: ");
+                    String name = sc.nextLine();
+
+                    System.out.print("Enter amount: ");
+                    double amount = sc.nextDouble();
+
+                    expenses[count] = new Expense(name, amount);
+                    count++;
+
+                    System.out.println("Expense added successfully!");
+                    break;
+
+                case 2:
+                    if (count == 0) {
+                        System.out.println("No expenses recorded.");
+                    } else {
+                        System.out.println("\n--- Expense List ---");
+                        for (int i = 0; i < count; i++) {
+                            System.out.println(expenses[i].name + " : ₹" + expenses[i].amount);
+                        }
+                    }
+                    break;
+
+                case 3:
+                    double total = 0;
+                    for (int i = 0; i < count; i++) {
+                        total += expenses[i].amount;
+                    }
+                    System.out.println("Total Expense: ₹" + total);
+                    break;
+
+                case 4:
+                    if (count == 0) {
+                        System.out.println("No expenses to split.");
+                        break;
+                    }
+
+                    System.out.print("Enter number of people: ");
+                    int people = sc.nextInt();
+
+                    double sum = 0;
+                    for (int i = 0; i < count; i++) {
+                        sum += expenses[i].amount;
+                    }
+
+                    double share = sum / people;
+                    System.out.println("Each person should pay: ₹" + share);
+                    break;
+
+                case 5:
+                    System.out.println("Exiting program...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice.");
+            }
+
+        } while (choice != 5);
+
+        sc.close();
+    }
+}
